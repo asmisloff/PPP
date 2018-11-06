@@ -39,3 +39,17 @@ int getint(const string& msg)
     }
     return i;
 }
+
+string getstr(const string& msg)
+{
+    cout << msg;
+    string res = "";
+    cin >> res;
+    if (res == "") {
+        cout << "Введена пустая строка. Повторить ввод? (д/н): ";
+        cin >> res;
+        if (res == "д" || res == "Д")
+            getstr(msg);
+    }
+    return res;
+}
