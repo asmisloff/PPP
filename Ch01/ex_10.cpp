@@ -50,4 +50,3 @@ double calculate(string _operator, string op_1, string op_2, string& error_msg)
 		return 0;
 	}
 	return res;
-}
