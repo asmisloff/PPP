@@ -2,6 +2,7 @@
 
 int main()
 {
+    setlocale(0, "");
     cout << "Введите выражение: ";
     double a1, a2;
     char op;
