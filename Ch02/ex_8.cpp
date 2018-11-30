@@ -2,11 +2,16 @@
 
 int main()
 {
-	long long grains = 1;
-    for (int i = 0; i < 64; ++i)
+	double grains = 1, prev;
+	int i;
+    for (i = 0; i < 1064; ++i)
     {
+    	prev = grains;
     	cout << i+1 << ": " << (grains *= 2) << endl;
+    	if (grains < prev || isinf(grains)) {
+    		break;
+    	}
     }
 
-    cout << grains << " of grains" << endl;
+    cout << "Не более " << i << " клеток" << endl;
 }
