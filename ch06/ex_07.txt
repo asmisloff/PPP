@@ -1,0 +1,14 @@
+expression:
+	term_1
+	expression | term_1
+term_1:
+	term_0
+	term_1 ^ term_0
+term_0:
+	primary
+	term_0 & primary
+primary:
+	number
+	(expression)
+	!primary
+	~primary
