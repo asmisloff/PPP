@@ -3,56 +3,56 @@
 string hundreds(int n)
 {
     switch (n) {
-        case 0:
-            return "";
-        case 1:
-            return to_string(n) + " сотня";
-        case 2: case 3: case 4:
-            return to_string(n) + " сотни";
-        case 5: case 6: case 7: case 8: case 9:
-            return to_string(n) + " сотен";
+    case 0:
+        return "";
+    case 1:
+        return to_string(n) + " сотня";
+    case 2: case 3: case 4:
+        return to_string(n) + " сотни";
+    case 5: case 6: case 7: case 8: case 9:
+        return to_string(n) + " сотен";
     }
 }
 
 string decades(int n)
 {
     switch (n) {
-        case 0:
-            return "";
-        case 1:
-            return to_string(n) + " десяток";
-        case 2: case 3: case 4:
-            return to_string(n) + " десятка";
-        case 5: case 6: case 7: case 8: case 9:
-            return to_string(n) + " десятков";
+    case 0:
+        return "";
+    case 1:
+        return to_string(n) + " десяток";
+    case 2: case 3: case 4:
+        return to_string(n) + " десятка";
+    case 5: case 6: case 7: case 8: case 9:
+        return to_string(n) + " десятков";
     }
 }
 
 string units(int n)
 {
     switch (n) {
-        case 0:
-            return "";
-        case 1:
-            return to_string(n) + " единица";
-        case 2: case 3: case 4:
-            return to_string(n) + " единицы";
-        case 5: case 6: case 7: case 8: case 9:
-            return to_string(n) + " единиц";
+    case 0:
+        return "";
+    case 1:
+        return to_string(n) + " единица";
+    case 2: case 3: case 4:
+        return to_string(n) + " единицы";
+    case 5: case 6: case 7: case 8: case 9:
+        return to_string(n) + " единиц";
     }
 }
 
 string to_str(int order, int digit)
 {
     switch (order) {
-        case 0:
-            return units(digit);
-        case 1:
-            return decades(digit);
-        case 2:
-            return hundreds(digit);
-        default:
-            error("Десятичная разрядность больше 3 не поддерживается");
+    case 0:
+        return units(digit);
+    case 1:
+        return decades(digit);
+    case 2:
+        return hundreds(digit);
+    default:
+        error("Десятичная разрядность больше 3 не поддерживается");
     }
 }
 
