@@ -76,7 +76,7 @@ int main()
     for(int i = 0; i < v.size(); i++) {
         res += pow(10, order) * v[i];
         string temp = to_str(order, v[i]);
-        if (temp != "") {
+        if (temp != "") {x
             string_repr += temp + ", ";
         }
         --order;
