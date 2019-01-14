@@ -2,24 +2,18 @@
 
 int main()
 {
+    string ins;
     cout << ">> ";
-    int a;
-    if (cin >> a) {;
-        cout << ">> " << a << " -> int" << endl;
+    cin >> ins;
+    int n;
+    for (char c : ins) {
+        if (isdigit(c)) {
+            n = n*10 + (c - '0');
+        }
+        else {
+            break;
+        }
     }
-    else {
-        cout << "-----Ошибка чтения числа -----" << endl;
-        cout << ">> a = " << a << endl; 
-        cin.clear();
-        cin.ignore();
-    }
-    string s;
-    cin >> s;
-    cout << ">> " << s << " -> string" << endl;
     
     return 0;
 }
-
-// (progn
-//  (interactive)
-//  (compile "g++ -std=c++11 test.cpp -o test"))

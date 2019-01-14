@@ -1,11 +1,5 @@
 #include "../std_lib_facilities.h"
 
-/*
-  todo:
-  -- Читать из cin строку и разбирать ее функцией strtoull
-  -- Выход при вводе 'q'.
-*/
-
 class User_input
 {
 public:
@@ -20,73 +14,100 @@ void clear_cin()
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
+int str_to_int(string s)
+{
+    int n = 0;
+    if (s == "q") {
+        return -1;
+    }
+    for (char c : s) {
+        if (isdigit(c)) {
+            n = n*10 + (c - '0');
+        }
+        else {
+            return -2;
+        }
+    }
+    return n;
+}
+
 User_input get_user_input()
 {
     User_input inp;
-    int a = 0;
-    int b = 0;
-    string c;
-
+    
     for (;;) {
         cout << "Размер множества: ";
-        if (!(cin >> a)) {
-            cin.clear();
-            string s;
-            cin >> s;
-            clear_cin();
-            if (s == "q") {
-                inp.quit_program = true; 
-                return inp;
-            }
-            else {
-                cout << "Необходимо ввести целое число" << endl;
-                continue;
-            }
+        string s;
+        cin >> s; 
+        int a = str_to_int(s);
+        if (a == -1) {
+            inp.quit_program = true;
+            return inp;
         }
-        else if (a <= 0) {
-            cerr << "Размер множества должен быть положительным числом" << endl;
+        else if (a == -2) {
+            cout << "Неверный формат числа" << endl;
             continue;
         }
-        break;
+        else {
+            inp.a = a;
+            cerr << a << endl;
+            break;
+        }
     }
     
     for (;;) {
         cout << "Размер подмножества: ";
-        cin >> b;
-        if (b > a || b <= 0) {
-            cerr << "Размер подмножества не должен превышать размера множества" << endl;
-            cout << "b = " << b << endl;
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+        string s;
+        cin >> s;
+        int b = str_to_int(s);
+        if (b == -1) {
+            inp.quit_program = true;
+            return inp;
+        }
+        else if (b == -2) {
+            cout << "Неверный формат числа" << endl;
             continue;
         }
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');	
-        break;
+        else {
+            if (b > inp.a) {
+                cerr << "Размер подмножества не должен превышать размера множества" << endl;
+                continue;
+            }
+            inp.b = b;
+            break;
+        }
     }
 
     for (;;) {
         cout << "Перестановка или сочетание? (п/с): ";
+        string c;
         cin >> c;
-        if ((c != "п") && (c != "с")) {
+        if (c == "q") {
+        	inp.quit_program = true;
+        	return inp;
+        }
+        else if ((c == "п") || (c == "с")) {
+        	inp.c = c;
+        	break;
+        }
+        else {
             cerr << "Допустимые варианты ввода: \'п\' или \'с\'" << endl;
             continue;
         }
-        break;
     }
 
-    inp.a = a, inp.b = b, inp.c = c;
+    cout << "a = " << inp.a << ", b = " << inp.b << ", c = " << inp.c << endl;
     return inp;
 }
 
-int factorial(unsigned long n)
+unsigned long long factorial(unsigned int n)
 {
     //cout << "Расчет " << n << "!" << endl;
     if (n == 0) {
         return 1;
     }
-    unsigned long res = 1;
-    unsigned long prev = res;
+    unsigned long long res = 1;
+    unsigned long long prev = res;
     for ( ; n > 1; --n) {
         prev = res;
         res *= n;
@@ -98,7 +119,7 @@ int factorial(unsigned long n)
     return res;
 }
 
-int compute_comb(int a, int b, string c)
+unsigned long long compute_comb(int a, int b, string c)
 {
     if (c == "п") {
         return factorial(a) / factorial(a - b);
@@ -126,7 +147,7 @@ int main()
         catch (exception& e) {
             cerr << "------------- Ошибка -------------: " << endl;
             cerr << e.what() << endl;
-            return 1;
+            continue;
         }
         cout << "--> " << res << endl;
     }
