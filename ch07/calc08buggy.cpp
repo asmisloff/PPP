@@ -85,10 +85,11 @@ Token Token_stream::get()
         return Token(number,val);
     }
     default:
-        if (isalpha(ch)) {
+        if (isalpha(ch) || ch == '_') {
             string s;
             s += ch;
-            while(cin.get(ch) && (isalpha(ch) || isdigit(ch))) s+=ch;
+            while(cin.get(ch) && (isalpha(ch) || isdigit(ch) || ch == '_'))
+                s+=ch;
             cin.unget();
             if (s == "let") return Token(let);	
             if (s == "q") return Token(quit);
@@ -220,11 +221,14 @@ double expression()
 double declaration()
 {
     Token t = ts.get();
-    if (t.kind != 'a') error ("name expected in declaration");
+    if (t.kind != 'a')
+        error ("name expected in declaration");
     string name = t.name;
-    if (is_declared(name)) error(name, " declared twice");
+    if (is_declared(name))
+        error(name, " declared twice");
     Token t2 = ts.get();
-    if (t2.kind != '=') error("= missing in declaration of " ,name);
+    if (t2.kind != '=')
+        error("= missing in declaration of " ,name);
     double d = expression();
     names.push_back(Variable(name,d));
     return d;
@@ -254,20 +258,20 @@ const string result = "= ";
 //Основной цикл вычислений
 void calculate()
 {
-    while(true) {
+    while(true)
         try {
             cout << prompt;
             Token t = ts.get();
             while (t.kind == print) t=ts.get();
-            cout << t.kind << endl;
+            //cout << t.kind << endl;
             if (t.kind == quit) return;
             ts.unget(t);
+            cout << result << statement() << endl;
 	}
 	catch(runtime_error& e) {
             cerr << e.what() << endl;
             clean_up_mess();
 	}
-    }
 }
 
 //////////////////////////////////////////////////////////////////////
