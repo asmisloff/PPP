@@ -20,7 +20,7 @@ struct Token {
     string name;
     Token(char ch) :kind(ch), value(0) { }
     Token(char ch, double val) :kind(ch), value(val) { }
-    Token(char symbol, string& var_name) :kind(symbol), name(var_name) { }
+    Token(char ch, string& name) :kind(ch), name(name) { }
 };
 
 /*
@@ -30,12 +30,14 @@ struct Token {
 class Token_stream
 {
     bool full;
-    Token buffer;
+    vector<Token> buffer;
 public:
-    Token_stream() :full(0), buffer(0) { }
+    Token_stream() :full(0) { }
 
+    /*Read next token from stream*/
     Token get();
-    void unget(Token t) { buffer=t; full=true; }
+    Token look_in();
+    void unget(Token t);
 
     void ignore(char);
 };
@@ -53,7 +55,14 @@ const char name = 'a';
 /*Считывает лексему из входного потока и возвращает ее.*/
 Token Token_stream::get()
 {
-    if (full) { full=false; return buffer; }
+    if (!buffer.empty()) {
+        Token t = buffer.back();
+        buffer.pop_back();
+        if (buffer.empty()) {
+            full = false;
+        }
+        return t;
+    }
     char ch;
     cin >> ch;
     switch (ch) {
@@ -88,26 +97,45 @@ Token Token_stream::get()
         if (isalpha(ch) || ch == '_') {
             string s;
             s += ch;
-            while(cin.get(ch) && (isalpha(ch) || isdigit(ch) || ch == '_'))
+            while(cin.get(ch) && (isalpha(ch) || isdigit(ch) || ch == '_')) 
                 s+=ch;
             cin.unget();
-            if (s == "let") return Token(let);	
-            if (s == "q") return Token(quit);
-            return Token(name,s);
+            
+            if (s == "let") {
+                return Token(let);
+            }
+            else if (s == "q") {
+                return Token(quit);
+            }
+            else {
+                return Token(name,s);
+            }
         }
-        error("Bad token");
+        else {
+            error("Bad token");
+        }
     }
+}
+
+void Token_stream::unget(Token t)
+{
+    full = true;
+    buffer.push_back(t);
 }
 
 /*Пропустить все символы до c включительно*/
 void Token_stream::ignore(char c)
 {
-    if (full && (c==buffer.kind)) {
-        full = false;
-        return;
+    while (!buffer.empty()) {
+        Token t = buffer.back();
+        char kind = t.kind;
+        buffer.pop_back();
+        if (c == kind) {
+            return;
+        }
     }
-    full = false;
 
+    full = false;
     char ch;
     while (cin>>ch)
         if (ch==c) return;
@@ -234,6 +262,15 @@ double declaration()
     return d;
 }
 
+double assignment(const string& s)
+{
+    if (!is_declared(s))
+        error("Undefined variable ", s);
+    double value = expression();
+    set_value(s, value);
+    return value;
+}
+
 //Выполнить инструкцию и вернуть значение результирующего выражения.
 double statement()
 {
@@ -241,6 +278,16 @@ double statement()
     switch(t.kind) {
     case let:
         return declaration();
+    case name:
+    {
+        Token t2 = ts.get();
+        if (t2.kind == '=') {
+            return assignment(t.name);
+        }
+        else {
+            ts.unget(t2);
+        }
+    }
     default:
         ts.unget(t);
         return expression();
@@ -263,7 +310,7 @@ void calculate()
             cout << prompt;
             Token t = ts.get();
             while (t.kind == print) t=ts.get();
-            //cout << t.kind << endl;
+            //*cout << t.kind << endl;
             if (t.kind == quit) return;
             ts.unget(t);
             cout << result << statement() << endl;
