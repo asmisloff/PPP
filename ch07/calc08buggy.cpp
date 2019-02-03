@@ -1,11 +1,3 @@
-/*
-  calculator08buggy.cpp
-
-  Helpful comments removed.
-
-  We have inserted 3 bugs that the compiler will catch and 3 that it won't.
-*/
-
 #include "../std_lib_facilities.h"
 
 /*
@@ -48,6 +40,7 @@ public:
 const char let = 'L';
 const char quit = 'Q';
 const char print = ';';
+const char constant = 'C';
 const char number = '8';
 const char name = 'a';
 //////////////////////////////////////////////////////////////////////
@@ -97,13 +90,16 @@ Token Token_stream::get()
         if (isalpha(ch) || ch == '_') {
             string s;
             s += ch;
-            while(cin.get(ch) && (isalpha(ch) || isdigit(ch) || ch == '_')) 
+            while(cin.get(ch) && (isalpha(ch) || isdigit(ch) || ch == '_'))
                 s+=ch;
             cin.unget();
-            
+
             if (s == "let") {
                 return Token(let);
             }
+            else if (s == "const") {
+				return Token(constant);
+			}
             else if (s == "q") {
                 return Token(quit);
             }
@@ -148,7 +144,8 @@ void Token_stream::ignore(char c)
 struct Variable {
     string name;
     double value;
-    Variable(string n, double v) :name(n), value(v) { }
+    bool mut;
+    Variable(string n, double v, bool _mut) :name(n), value(v), mut(_mut) { }
 };
 //Список пользовательских переменных.
 vector<Variable> names;
@@ -162,11 +159,16 @@ double get_value(string s)
 //Присвоить переменной с именем s значение d
 void set_value(string s, double d)
 {
-    for (int i = 0; i<=names.size(); ++i)
-        if (names[i].name == s) {
+    for (int i = 0; i<=names.size(); ++i) {
+        Variable v = names[i];
+        if (v.name == s) {
+            if (v.mut == false) {
+                error("Попытка присвоить значение константе");
+            }
             names[i].value = d;
             return;
         }
+    }
     error("set: undefined name ",s);
 }
 //Проверить, объявлена ли переменная.
@@ -246,7 +248,7 @@ double expression()
 }
 
 //Объявить переменную и вернуть ее значение.
-double declaration()
+double declaration(bool mut = true)
 {
     Token t = ts.get();
     if (t.kind != 'a')
@@ -258,7 +260,7 @@ double declaration()
     if (t2.kind != '=')
         error("= missing in declaration of " ,name);
     double d = expression();
-    names.push_back(Variable(name,d));
+    names.push_back(Variable(name,d, mut));
     return d;
 }
 
@@ -278,6 +280,8 @@ double statement()
     switch(t.kind) {
     case let:
         return declaration();
+	case constant:
+		return declaration(false);
     case name:
     {
         Token t2 = ts.get();
