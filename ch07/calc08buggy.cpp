@@ -39,6 +39,7 @@ public:
 //////////////////////////////////////////////////////////////////////
 const char let = 'L';
 const char quit = 'Q';
+const char help = 'H';
 const char print = ';';
 const char constant = 'C';
 const char number = '8';
@@ -100,10 +101,13 @@ Token Token_stream::get()
                 return Token(let);
             }
             else if (s == "const") {
-				return Token(constant);
-			}
+                return Token(constant);
+            }
             else if (s == "q") {
                 return Token(quit);
+            }
+            else if (s == "h") {
+                return Token(help);
             }
             else {
                 return Token(name,s);
@@ -199,6 +203,10 @@ public:
 
 Symbol_Table names;
 Token_stream ts;
+
+void print_help() {
+    cout << "------------- Help ------------" << endl;
+}
 
 double expression();
 
@@ -335,6 +343,10 @@ void calculate()
             while (t.kind == print) t=ts.get();
             //*cout << t.kind << endl;
             if (t.kind == quit) return;
+            if (t.kind == help) {
+                print_help();
+                continue;
+            }
             ts.unget(t);
             cout << result << statement() << endl;
 	}
