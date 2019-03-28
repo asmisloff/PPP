@@ -147,38 +147,55 @@ struct Variable {
     bool mut;
     Variable(string n, double v, bool _mut) :name(n), value(v), mut(_mut) { }
 };
-//Список пользовательских переменных.
-vector<Variable> names;
-//Получить значение переменной с именем s.
-double get_value(string s)
-{
-    for (int i = 0; i<names.size(); ++i)
-        if (names[i].name == s) return names[i].value;
-    error("get: undefined name ",s);
-}
-//Присвоить переменной с именем s значение d
-void set_value(string s, double d)
-{
-    for (int i = 0; i<=names.size(); ++i) {
-        Variable v = names[i];
-        if (v.name == s) {
-            if (v.mut == false) {
-                error("Попытка присвоить значение константе");
-            }
-            names[i].value = d;
-            return;
-        }
-    }
-    error("set: undefined name ",s);
-}
-//Проверить, объявлена ли переменная.
-bool is_declared(string s)
-{
-    for (int i = 0; i<names.size(); ++i)
-        if (names[i].name == s) return true;
-    return false;
-}
 
+class Symbol_Table
+{
+    vector<Variable> var_table;
+
+public:
+    //Получить значение переменной с именем s.
+    double get_value(string s)
+    {
+        for (int i = 0; i<var_table.size(); ++i)
+            if (var_table[i].name == s) return var_table[i].value;
+        error("get: undefined name ",s);
+    }
+
+    //Присвоить переменной с именем s значение d
+    void set_value(string s, double d)
+    {
+        for (int i = 0; i<=var_table.size(); ++i) {
+            Variable v = var_table[i];
+            if (v.name == s) {
+                if (v.mut == false) {
+                    error("Попытка присвоить значение константе");
+                }
+                var_table[i].value = d;
+                return;
+            }
+        }
+        error("set: undefined name ",s);
+    }
+
+    //Проверить, объявлена ли переменная.
+    bool is_declared(string s)
+    {
+        for (int i = 0; i<var_table.size(); ++i)
+            if (var_table[i].name == s) return true;
+        return false;
+    }
+
+    void push_back(Variable v)
+    {
+        var_table.push_back(v);
+    }
+
+    int size() {
+        return var_table.size();
+    }
+};
+
+Symbol_Table names;
 Token_stream ts;
 
 double expression();
@@ -198,7 +215,7 @@ double primary()
     case number:
         return t.value;
     case name:
-        return get_value(t.name);
+        return names.get_value(t.name);
     default:
         error("primary expected");
     }
@@ -254,7 +271,7 @@ double declaration(bool mut = true)
     if (t.kind != 'a')
         error ("name expected in declaration");
     string name = t.name;
-    if (is_declared(name))
+    if (names.is_declared(name))
         error(name, " declared twice");
     Token t2 = ts.get();
     if (t2.kind != '=')
@@ -266,10 +283,10 @@ double declaration(bool mut = true)
 
 double assignment(const string& s)
 {
-    if (!is_declared(s))
+    if (!names.is_declared(s))
         error("Undefined variable ", s);
     double value = expression();
-    set_value(s, value);
+    names.set_value(s, value);
     return value;
 }
 
