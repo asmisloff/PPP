@@ -57,7 +57,7 @@ Token Token_stream::get()
         return t;
     }
     char ch;
-    cin >> ch;
+    while ((ch = (char)cin.get()) == ' ') {} //pass whitespaces
     switch (ch) {
     case '(':
     case ')':
@@ -86,6 +86,8 @@ Token Token_stream::get()
         cin >> val;
         return Token(number,val);
     }
+    case '\n':
+       return Token(print);
     default:
         if (isalpha(ch) || ch == '_') {
             string s;
