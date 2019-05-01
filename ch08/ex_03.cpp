@@ -1,6 +1,5 @@
 #include "../std_lib_facilities.h"
 
-
 void print(const vector<int>& v, string comment = "") {
     cout << "[ ";
     if (v.size() > 0) {
@@ -14,12 +13,9 @@ void print(const vector<int>& v, string comment = "") {
 }
 
 void fibonacci(int x, int y, vector<int>& v, int n) {
-    if (x <= 0 || y <= x || n < 0) {
-        error("Arguments error: x <= 0, y <= 0, y <= x or n < 0");
-    }
-    if (n > 0) v.push_back(x);
+    if (n > 0) v.push_back(min(x, y));
     else return; 
-    if (n > 1) v.push_back(y);
+    if (n > 1) v.push_back(max(x, y));
     else return;
     for (int i=2; i<n; ++i) {
         v.push_back(v[i-1] + v[i-2]);
@@ -28,7 +24,7 @@ void fibonacci(int x, int y, vector<int>& v, int n) {
 
 int main() {
     vector<int> v;
-    fibonacci(1, 2, v, 100);
+    fibonacci(0, -1, v, 50);
     print(v);
 
     return 0;
