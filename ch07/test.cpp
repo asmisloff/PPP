@@ -44,13 +44,18 @@ int main()
     //     getline(cin, s);
     //     cout << "Not assignment. In cin: " << s << endl;
     // }
-    vector<int> v;
-    for (int i = 0; i < 10; ++i) {
-        v.push_back(i);
+    char ch = '0';
+    while(cin) {
+        ch = (char)cin.get();
+        switch (ch) {
+        case ' ':
+            cout << "space" << endl;
+            break;
+        case '\n':
+            cout << "\\n" << endl;
+            break;
+        default:
+            cout << ch << endl;
+        }
     }
-    while (!v.empty()) {
-        cout << v.back() << ' ';
-        v.pop_back();
-    }
-    cout << endl;
 }

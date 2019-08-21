@@ -5,7 +5,6 @@ class User_input
 public:
     int a, b;
     string c;
-    bool quit_program = false;
 };
 
 void clear_cin()
@@ -17,15 +16,12 @@ void clear_cin()
 int str_to_int(string s)
 {
     int n = 0;
-    if (s == "q") {
-        return -1;
-    }
     for (char c : s) {
         if (isdigit(c)) {
             n = n*10 + (c - '0');
         }
         else {
-            return -2;
+            return -1;
         }
     }
     return n;
@@ -38,13 +34,12 @@ User_input get_user_input()
     for (;;) {
         cout << "Размер множества: ";
         string s;
-        cin >> s; 
+        cin >> s;
+        if (s == "q") {
+            exit(0);
+        }
         int a = str_to_int(s);
         if (a == -1) {
-            inp.quit_program = true;
-            return inp;
-        }
-        else if (a == -2) {
             cout << "Неверный формат числа" << endl;
             continue;
         }
@@ -60,11 +55,10 @@ User_input get_user_input()
         string s;
         cin >> s;
         int b = str_to_int(s);
-        if (b == -1) {
-            inp.quit_program = true;
-            return inp;
+        if (s == "q") {
+            exit(0);
         }
-        else if (b == -2) {
+        if (b == -1) {
             cout << "Неверный формат числа" << endl;
             continue;
         }
@@ -83,8 +77,7 @@ User_input get_user_input()
         string c;
         cin >> c;
         if (c == "q") {
-        	inp.quit_program = true;
-        	return inp;
+        	exit(0);
         }
         else if ((c == "п") || (c == "с")) {
         	inp.c = c;
@@ -135,12 +128,7 @@ int main()
     int res;
     
     while (true) {
-        inp =  get_user_input();
-        if (inp.quit_program) {
-            cout << "Программа завершена" << endl;
-            break;
-        }
-        
+        inp =  get_user_input();        
         try {
             res = compute_comb(inp.a, inp.b, inp.c);
         }
@@ -154,5 +142,3 @@ int main()
 
     return 0;
 }
-
-
