@@ -71,5 +71,4 @@ int main()
     cout << "Shortest string is " << si.shortest_string << endl;
     cout << "Lexicograpical first string is " << si.lex_first << endl;
     cout << "Lexicograpical last string is " << si.lex_last << endl;
-    cout << ("a" < "b") << endl;
 }
