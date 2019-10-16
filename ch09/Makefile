@@ -21,3 +21,12 @@ ex05:
 	@echo Running
 	@echo -------------------------------------
 	ex05.exe 
+
+ex07:
+	cls
+	g++ -Wall -std=c++11 ex07.cpp -o ex07.exe
+	@echo -------------------------------------
+	@echo Ok
+	@echo Running
+	@echo -------------------------------------
+	ex07.exe 
