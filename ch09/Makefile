@@ -30,3 +30,12 @@ ex07:
 	@echo Running
 	@echo -------------------------------------
 	ex07.exe 
+
+ex08:
+	cls
+	g++ -Wall -std=c++11 ex07.cpp patron.cpp -o ex08.exe
+	@echo -------------------------------------
+	@echo Ok
+	@echo Running
+	@echo -------------------------------------
+	ex08.exe

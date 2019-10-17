@@ -3,6 +3,7 @@
 #include <vector>
 #include <cctype>
 #include "ex07.h"
+#include "patron.h"
 
 using namespace std;
 
@@ -196,4 +197,10 @@ int main() {
 	cout << b << endl;
 	cout << "B == b --> " << (B == b ? "true" : "false") << endl;
 	cout << "B != b --> " << (B != b ? "true" : "false") << endl;
+
+	Patron mrSmith("Smith", 1);
+	mrSmith.set_fee(100);
+	cout << mrSmith << endl;
+	mrSmith.pais_fee();
+	cout << mrSmith << endl;
 }
