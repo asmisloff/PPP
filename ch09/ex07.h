@@ -1,4 +1,5 @@
 #include <string>
+#include "patron.h"
 
 using namespace std;
 
@@ -42,6 +43,7 @@ namespace Library
 		Date f_date_of_publishing;
 		void init(string isbn, string name, string author, Date date_of_publishing);
 		Genre f_genre;
+		string f_issued_to;
 
 	public:
 		Book(string isbn, string name, string author, Date date_of_publishing);
@@ -51,6 +53,7 @@ namespace Library
 		string author() const;
 		Genre genre() const;
 		Date date_of_publishing() const;
+		string issued_to() const;
 	};
 
 	ostream& operator <<(ostream&, Book);
