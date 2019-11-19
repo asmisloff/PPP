@@ -3,12 +3,16 @@
 
 #define greatest_common_divisor(a, b) _gcd(abs(a), abs(b))
 int _gcd(int a, int b) {
-    if (a % b == 0)
+    a = abs(a), b = abs(b);
+    if (a % b == 0) {
         return b;
-    if (b % a == 0)
+    }
+    if (b % a == 0) {
         return a;
-    if (a > b)
+    }
+    if (a > b) {
         return _gcd(a%b, b);
+    }
     return _gcd(a, b%a);
 }
 
@@ -18,14 +22,10 @@ int least_common_multiple(int a, int b) {
 
 Rational::Rational(int num, int den)
 {
-    if (den == 0) {
-        throw std::invalid_argument("Zero denominator");
-    }
-    
+    if (den == 0) { throw std::invalid_argument("Zero denominator"); }
     if (num == 0) { den = 1; }
     if (den < 0) { num *= -1; den *= -1; }
-    _numerator = num;
-    _denominator = den;
+    _numerator = num, _denominator = den;
     reduce();
 }
 
@@ -54,7 +54,7 @@ std::string Rational::normalized() const
 
 std::ostream& operator<<(std::ostream& out, const Rational& r)
 {
-    return out << r.numerator() << '/' << r.denominator();
+    return out << r.to_string();
 }
 
 const Rational operator+(const Rational& left, const Rational& right)
@@ -71,15 +71,15 @@ const Rational operator+(const Rational& left, const Rational& right)
 
 const Rational operator-(const Rational& left, const Rational& right)
 {
-    if (left._denominator == right._denominator) {
-        return Rational(left._numerator - right._numerator, left._denominator).reduce();
+    if (left.denominator() == right.denominator()) {
+        return Rational(left.numerator() - right.numerator(), left.denominator())
+               .reduce();
     }
     else {
-        int denom = least_common_multiple(left._denominator, right._denominator);
-        int num = left._numerator * (denom / left._denominator)
-                - right._numerator * (denom / right._denominator);
-        Rational temp(num, denom);
-        return temp.reduce();
+        int denom = least_common_multiple(left.denominator(), right.denominator());
+        int num = left.numerator() * (denom / left.denominator())
+                - right.numerator() * (denom / right.denominator());
+        return Rational(num, denom).reduce();
     }
 }
 

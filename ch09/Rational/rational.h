@@ -23,7 +23,7 @@ private:
     int _numerator;
     int _denominator;
     
-    const Rational& reduce();
+	const Rational& reduce();
 };
 
 std::ostream& operator<<(std::ostream& out, const Rational& r);
