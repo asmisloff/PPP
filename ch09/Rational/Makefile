@@ -1,3 +1,2 @@
 all:
-	clear
 	g++ -std=c++11 -o test main.cpp rational.cpp

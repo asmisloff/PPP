@@ -1,18 +1,19 @@
 #include <stdexcept>
 #include "rational.h"
 
-unsigned int greatest_common_divisor(int a, int b) {
+#define greatest_common_divisor(a, b) _gcd(abs(a), abs(b))
+int _gcd(int a, int b) {
     if (a % b == 0)
         return b;
     if (b % a == 0)
         return a;
     if (a > b)
-        return greatest_common_divisor(a%b, b);
-    return greatest_common_divisor(a, b%a);
+        return _gcd(a%b, b);
+    return _gcd(a, b%a);
 }
 
-unsigned int least_common_multiple(int a, int b) {
-    return (a*b)/greatest_common_divisor(a,b);
+int least_common_multiple(int a, int b) {
+    return abs((a*b)/greatest_common_divisor(a,b));
 }
 
 Rational::Rational(int num, int den)
@@ -53,7 +54,7 @@ std::string Rational::normalized() const
 
 std::ostream& operator<<(std::ostream& out, const Rational& r)
 {
-    return out << r.to_string() << std::endl;
+    return out << r.numerator() << '/' << r.denominator();
 }
 
 const Rational operator+(const Rational& left, const Rational& right)
@@ -66,4 +67,45 @@ const Rational operator+(const Rational& left, const Rational& right)
         int num = left.numerator() * (denom / left.denominator()) + right.numerator() * (denom / right.denominator());
         return Rational(num, denom).reduce();
     }
+}
+
+const Rational operator-(const Rational& left, const Rational& right)
+{
+    if (left._denominator == right._denominator) {
+        return Rational(left._numerator - right._numerator, left._denominator).reduce();
+    }
+    else {
+        int denom = least_common_multiple(left._denominator, right._denominator);
+        int num = left._numerator * (denom / left._denominator)
+                - right._numerator * (denom / right._denominator);
+        Rational temp(num, denom);
+        return temp.reduce();
+    }
+}
+
+const Rational operator*(const Rational& left, const Rational& right)
+{
+    return Rational(left._numerator * right._numerator,
+                    left._denominator * right._denominator)
+           .reduce();
+}
+
+const Rational operator/(const Rational& left, const Rational& right)
+{
+    return Rational(left._numerator * right._denominator,
+                    left._denominator * right._numerator)
+           .reduce();
+}
+
+bool operator==(const Rational& left, const Rational& right)
+{
+    return (left._numerator == right._numerator)
+        && (left._denominator == right._denominator);
+}
+
+Rational& Rational::operator=(const Rational other)
+{
+    this->_numerator = other.numerator();
+    this->_denominator = other.denominator();
+    return *this;
 }

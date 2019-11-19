@@ -13,16 +13,17 @@ public:
     std::string normalized() const;
     
     friend const Rational operator+(const Rational& left, const Rational& right);
-    friend const Rational operator-(const Rational& left, const Rational& ringt);
-    friend const Rational operator*(const Rational& left, const Rational& ringt);
-    friend const Rational operator/(const Rational& left, const Rational& ringt);
-    friend bool operator==(const Rational& left, const Rational& ringt);
+    friend const Rational operator-(const Rational& left, const Rational& right);
+    friend const Rational operator*(const Rational& left, const Rational& right);
+    friend const Rational operator/(const Rational& left, const Rational& right);
+    friend bool operator==(const Rational& left, const Rational& right);
     Rational& operator=(const Rational other);
-    friend std::ostream& operator<<(std::ostream& out, const Rational& r);
-
+    
 private:
     int _numerator;
     int _denominator;
     
     const Rational& reduce();
 };
+
+std::ostream& operator<<(std::ostream& out, const Rational& r);
